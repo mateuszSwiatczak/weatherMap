@@ -177,12 +177,12 @@ function App() {
         x[2] < endCords[1]
       ) {
         return x[0];
-      }
+      } else return false;
     });
     if (pointAtCell[0] !== undefined) {
       if (pointAtCell.length > 1) {
         const aveTemp = [];
-        pointAtCell.map(x => {
+        pointAtCell.forEach(x => {
           aveTemp.push(x[0]);
         });
         return aveTemp.reduce(function (acc, val) {
