@@ -67,6 +67,10 @@ p > span {
   width: 100%;
   padding: 0;
 }
+.tempScale__li {
+  height: 100%;
+  width: 100%;
+}
 @media (max-width: 500px) {
   #TempScale {
     bottom: 5%;

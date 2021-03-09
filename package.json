@@ -43,7 +43,10 @@
     ]
   },
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^7.21.0",
+    "eslint-plugin-react": "^7.22.0"
+  },
   "author": "mauteszswiatczak",
   "license": "ISC",
   "description": ""
