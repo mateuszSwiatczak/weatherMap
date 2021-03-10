@@ -1,11 +1,11 @@
 import L from "leaflet";
-("use strict");
+
 class WeatherMapStyle {
   constructor() {
     this.points = [];
     this.polandPolygon = [
       [14.063, 48.894],
-      [24.302, 54.952],
+      [24.302, 54.952]
     ];
     this.wSimpleRect =
       (this.polandPolygon[1][0] - this.polandPolygon[0][0]) / 10;
@@ -17,13 +17,13 @@ class WeatherMapStyle {
     if (pointsInCell === null) {
       return {
         stroke: false,
-        fillOpacity: 0,
+        fillOpacity: 0
       };
     } else {
       return {
         stroke: false,
         fillOpacity: 0.5,
-        fillColor: this.hslToHex(this.hue(pointsInCell)),
+        fillColor: this.hslToHex(this.hue(pointsInCell))
       };
     }
   }
@@ -42,7 +42,7 @@ class WeatherMapStyle {
     //Convert hsl to hex color - leaflet support only hex
     const l = 0.5;
     const a = (100 * Math.min(l, 1 - l)) / 100;
-    const f = n => {
+    const f = (n) => {
       const k = (n + h / 30) % 12;
       const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
       return Math.round(255 * color)
@@ -68,7 +68,7 @@ class WeatherMapAlgorythms extends WeatherMapStyle {
   }
   pointInCell(startCords, endCords) {
     //Search marker inside Polygon
-    const pointAtCell = this.points.filter(x => {
+    const pointAtCell = this.points.filter((x) => {
       if (
         x[1] > startCords[0] &&
         x[2] > startCords[1] &&
@@ -81,7 +81,7 @@ class WeatherMapAlgorythms extends WeatherMapStyle {
     if (pointAtCell[0]) {
       if (pointAtCell.length > 1) {
         const points = [];
-        pointAtCell.forEach(x => {
+        pointAtCell.forEach((x) => {
           points.push(x[0]);
         });
         return this.averageTemperature(points);
@@ -167,8 +167,8 @@ class WeatherMapAlgorythms extends WeatherMapStyle {
     return this.fitredTempOfClosePoints(lefCornerPoints, rightCornerPoints);
   }
   fitredTempOfClosePoints(lefCornerPoints, rightCornerPoints) {
-    const arr = [lefCornerPoints, rightCornerPoints].map(arr => {
-      arr.filter(x => {
+    const arr = [lefCornerPoints, rightCornerPoints].map((arr) => {
+      arr.filter((x) => {
         return x !== undefined;
       });
     });
@@ -195,7 +195,7 @@ class WeatherMap extends WeatherMapAlgorythms {
         tileSize: 512,
         zoomOffset: -1,
         accessToken:
-          "pk.eyJ1IjoibWF0ZXVzenN3aSIsImEiOiJja2tpZTF6NHYxbThiMnZtbjl5Mzg5cTVjIn0.Sxs-1oPYuv7QqC045wwxKw",
+          "pk.eyJ1IjoibWF0ZXVzenN3aSIsImEiOiJja2tpZTF6NHYxbThiMnZtbjl5Mzg5cTVjIn0.Sxs-1oPYuv7QqC045wwxKw"
       }
     ).addTo(this.map);
     const weatherPoints = this.fetchWeather();
@@ -210,10 +210,10 @@ class WeatherMap extends WeatherMapAlgorythms {
   }
   getCoordinatesOfPoints(pointsOfWeather) {
     pointsOfWeather
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         const waitForMakePointOnMap = async () => {
-          const promises = data.map(async station => {
+          const promises = data.map(async (station) => {
             const point = await this.getCoordinatesOfPoint(station);
             return point;
           });
@@ -233,8 +233,8 @@ class WeatherMap extends WeatherMapAlgorythms {
       station.stacja.split(" ").join("%20") +
       "&key=78fab1d01e3e414084228a7c8f27fb2a&language=en&pretty=1";
     await fetch(translated)
-      .then(response => response.json())
-      .then(data => this.makeMarker(station, data));
+      .then((response) => response.json())
+      .then((data) => this.makeMarker(station, data));
   }
   makeMarker(station, dataMarker) {
     //Place market on the map with additional color and popup
@@ -242,19 +242,19 @@ class WeatherMap extends WeatherMapAlgorythms {
       className: "leaflet-pane leaflet-marker-pane",
       html: `<i class="fas fa-thermometer-half temperature" style="color:hsl(${this.hue(
         station.temperatura
-      )}, 100%, 25%)"></i>`,
+      )}, 100%, 25%)"></i>`
     });
     const filtredArr = dataMarker.results.filter(this.selectPoint);
     try {
       this.points.push([
         station.temperatura,
         filtredArr[0].geometry.lat,
-        filtredArr[0].geometry.lng,
+        filtredArr[0].geometry.lng
       ]);
       const marker = L.marker(
         [filtredArr[0].geometry.lat, filtredArr[0].geometry.lng],
         {
-          icon: myIcon,
+          icon: myIcon
         }
       ).addTo(this.map);
       L.circle([filtredArr[0].geometry.lat, filtredArr[0].geometry.lng], {
@@ -262,7 +262,7 @@ class WeatherMap extends WeatherMapAlgorythms {
         fill: true,
         fillColor: this.hslToHex(this.hue(station.temperatura)),
         stroke: false,
-        fillOpacity: 0.6,
+        fillOpacity: 0.6
       }).addTo(this.map);
       marker.bindPopup(`stacja: ${station.stacja}</br>temperatura: ${station.temperatura}</br>
         prędkość wiatru: ${station.predkosc_wiatru} km/h`);
@@ -287,22 +287,20 @@ class WeatherMap extends WeatherMapAlgorythms {
           [
             [
               this.polandPolygon[0][1] + this.hSimpleRect * i1,
-              this.polandPolygon[0][0] + this.wSimpleRect * i,
+              this.polandPolygon[0][0] + this.wSimpleRect * i
             ],
             [
               this.polandPolygon[0][1] +
                 this.hSimpleRect * i1 +
                 this.hSimpleRect,
-              this.polandPolygon[0][0] +
-                this.wSimpleRect * i +
-                this.wSimpleRect,
-            ],
+              this.polandPolygon[0][0] + this.wSimpleRect * i + this.wSimpleRect
+            ]
           ],
           this.styleRec(
             this.isTempForCell(
               [
                 this.polandPolygon[0][1] + this.hSimpleRect * i1,
-                this.polandPolygon[0][0] + this.wSimpleRect * i,
+                this.polandPolygon[0][0] + this.wSimpleRect * i
               ],
               [
                 this.polandPolygon[0][1] +
@@ -310,7 +308,7 @@ class WeatherMap extends WeatherMapAlgorythms {
                   this.hSimpleRect,
                 this.polandPolygon[0][0] +
                   this.wSimpleRect * i +
-                  this.wSimpleRect,
+                  this.wSimpleRect
               ]
             )
           )
